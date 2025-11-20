@@ -35,7 +35,6 @@ export const QuizModel = {
       .eq("course_id", course_id)
       .eq("module_id", module_id)
       .maybeSingle();
-    console.log("error", error);
     if (error) throw error;
     if (data) return { data: convertKeysToCamelCase(data) };
   },

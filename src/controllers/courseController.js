@@ -4,6 +4,7 @@ import { createIds } from "../services/createIds.js";
 export const fetchAllCourses = async (_, res) => {
   const { data, error } = await CourseModel.getAllCourses();
   if (error) return res.status(500).json({ error: error.message });
+  console.log("data fetching from database", data);
   res.status(200).json({ responseDetails: { allCourses: data } });
 };
 
@@ -35,10 +36,16 @@ export const addCourse = async (req, res) => {
 
 export const editCourse = async (req, res) => {
   const { id } = req.params;
-  const updates = { ...req.body };
-  const updatedData = { ...updates, modules: createIds(updates.modules) };
+  const updates = { ...req.body.course };
+  const updatedData = {
+    modules: createIds(updates.modules, "module"),
+    description: updates.description,
+    is_premium_course: updates.isPremiumCourse,
+    title: updates.title,
+  };
   const { data, error } = await CourseModel.updateCourse(id, updatedData);
-  if (error) return res.status(400).json({ error: error.message });
+  console.log("error", error);
+  if (error) return res.status(400).json({ error: error });
   res.json({ responseDetails: { course: data } });
 };
 

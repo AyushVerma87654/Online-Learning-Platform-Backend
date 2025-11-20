@@ -38,8 +38,6 @@ export const CourseModel = {
         return { ...rest, instructorName: instructor.name, modules };
       })
     );
-
-    console.log("coursesWithQuiz", coursesWithQuiz);
     return { data: coursesWithQuiz };
   },
 
@@ -72,16 +70,26 @@ export const CourseModel = {
   },
 
   async updateCourse(id, course) {
+    console.log("id,course", id, course);
     const { data, error } = await supabase
       .from("courses")
-      .update({ ...course })
+      .update({
+        title: course.title,
+        description: course.description,
+        modules: course.modules,
+        is_premium_course: course.is_premium_course,
+      })
       .eq("id", id)
       .select()
       .single();
-    if (error) throw error;
+    console.log("error", error);
+    console.log("data", data);
+    if (error) return { error };
+
     const { data: courseData, error: courseError } = await this.getCourseById(
       data.id
     );
+    console.log("courseError", courseError);
     if (courseError) throw courseError;
     return { data: courseData };
   },
